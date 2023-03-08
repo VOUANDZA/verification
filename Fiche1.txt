@@ -1,0 +1,47 @@
+
+   5 Triggers
+
+create or replace trigger verifprix before insert or update on activite
+	for each row
+	declare t number(10,2);
+	begin
+	select tarif into t from station where nomStation=:new.nomStation;
+	if :new.prix>t or :new.prix<=0
+	then
+		raise_application_error('-20001','erreur sur le prix' );
+	end if;
+	end;
+	/
+	insert into activite values('venusa','Ski',2800);
+		update activite
+			set prix=3000 where nomStation='passac' and libelle='Ski'
+
+
+create or replace trigger verif_place before insert or update on sejour
+	for each row
+	declare cap integer;
+	 nbp integer;
+   begin
+   select capacite into cap from station where nomStation= :new.station;
+   select sum(nbplaces) into nbp from sejour where station= :new.station; and depart is not null;
+if :new.nbplaces + nbp> cap
+then
+
+
+create or replace trigger prix_croissant before  update on station
+	for each row 
+    begin
+	if :new.prix<=:old.prix
+	then 
+	update station set tarif=tarif +(:old.prix -:new.prix);
+	where nomStation=:new.nomStation;
+	end if;
+	end;
+	/
+update activite set prix=100 where nomStation='venusa' and libelle='Voile';
+
+
+	alter table station add nbactivite int default '0';
+
+	
+
